@@ -1,0 +1,216 @@
+unit U_Cadastros;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
+  System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ComCtrls, Vcl.ExtCtrls, Data.DB,
+  Vcl.Grids, Vcl.DBGrids, Vcl.StdCtrls, U_CadastroFuncionario, uDm_Funcionarios,
+  U_UpdateFuncionario, Vcl.Imaging.pngimage, uDm_Query;
+
+type
+  TDbGridPadrao = class(TCustomGrid);
+
+  TFormCadastros = class(TForm)
+    Pg_Cadastros: TPageControl;
+    Pg_CadFunc: TTabSheet;
+    tb_Pacientes: TTabSheet;
+    TabSheet3: TTabSheet;
+    TabSheet4: TTabSheet;
+    Pnl_Bottom: TPanel;
+    Pnl_Header: TPanel;
+    edt_Pesq: TLabeledEdit;
+    Btn_Pesq: TPanel;
+    DBGrid1: TDBGrid;
+    DsPesq: TDataSource;
+    Btn_NovoFuncionario: TPanel;
+    Btn_Editar: TPanel;
+    Btn_Deletar: TPanel;
+    Image1: TImage;
+    Panel4: TPanel;
+    edt_PesqPacientes: TLabeledEdit;
+    Panel5: TPanel;
+    Panel6: TPanel;
+    Panel1: TPanel;
+    Panel2: TPanel;
+    Panel3: TPanel;
+    db_Pacientes: TDBGrid;
+    ds_Paciente: TDataSource;
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure Btn_NovoFuncionarioClick(Sender: TObject);
+    procedure FormShow(Sender: TObject);
+    procedure Btn_EditarClick(Sender: TObject);
+    procedure DBGrid1CellClick(Column: TColumn);
+    procedure Image1Click(Sender: TObject);
+    procedure DBGrid1DrawColumnCell(Sender: TObject; const Rect: TRect;
+      DataCol: Integer; Column: TColumn; State: TGridDrawState);
+    procedure db_PacientesDrawColumnCell(Sender: TObject; const Rect: TRect;
+      DataCol: Integer; Column: TColumn; State: TGridDrawState);
+    procedure Panel5Click(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  FormCadastros: TFormCadastros;
+  id_funcionario: Integer;
+  Nome: string;
+  Sobrenome: string;
+  Cep: string;
+  Rg: string;
+  DataNasc: TDate;
+  Sexo: string;
+  NResidencia: string;
+  Telefone: string;
+  Celular: string;
+  Complemento: string;
+  Login: string;
+  Senha: string;
+  Cargo: string;
+
+implementation
+
+{$R *.dfm}
+
+procedure TFormCadastros.DBGrid1CellClick(Column: TColumn);
+begin
+  id_funcionario := DmFuncionarios.FDQuery1.FieldByName('pf_id').AsInteger;
+  Nome := DmFuncionarios.FDQuery1.FieldByName('nome').AsString;
+  Sobrenome := DmFuncionarios.FDQuery1.FieldByName('Sobrenome').AsString;
+  Cep := DmFuncionarios.FDQuery1.FieldByName('cep').AsString;
+  Rg := DmFuncionarios.FDQuery1.FieldByName('rg').AsString;
+  Cpf := DmFuncionarios.FDQuery1.FieldByName('Cpf').AsString;
+  DataNasc := DmFuncionarios.FDQuery1.FieldByName('dt_nasc').AsDateTime;
+  Sexo := DmFuncionarios.FDQuery1.FieldByName('sexo').AsString;
+  NResidencia := DmFuncionarios.FDQuery1.FieldByName
+    ('numero_residencia').AsString;
+  Telefone := DmFuncionarios.FDQuery1.FieldByName('telefone').AsString;
+  Celular := DmFuncionarios.FDQuery1.FieldByName('celular').AsString;
+  Complemento := DmFuncionarios.FDQuery1.FieldByName('complementos').AsString;
+  Login := DmFuncionarios.FDQuery1.FieldByName('login').AsString;
+  Senha := DmFuncionarios.FDQuery1.FieldByName('senha').AsString;
+  Cargo := DmFuncionarios.FDQuery1.FieldByName('cargo').AsString;
+end;
+
+procedure TFormCadastros.DBGrid1DrawColumnCell(Sender: TObject;
+  const Rect: TRect; DataCol: Integer; Column: TColumn; State: TGridDrawState);
+begin
+  if Odd(DBGrid1.DataSource.DataSet.RecNo) then
+  begin
+    DBGrid1.Canvas.Brush.Color := clsilver;
+  end
+  else
+  begin
+    DBGrid1.Canvas.Brush.Color := clwhite;
+  end;
+
+  if (gdSelected in State) then
+  begin
+    DBGrid1.Canvas.Brush.Color := $00BA2F00;
+    DBGrid1.Canvas.Font.Color := clwhite;
+  end;
+
+  DBGrid1.Canvas.FillRect(Rect);
+  DBGrid1.DefaultDrawColumnCell(Rect, DataCol, Column, State);
+
+  DBGrid1.Canvas.TextRect(Rect, Rect.Left + 3, Rect.Top + 8,
+    Column.Field.DisplayText);
+end;
+
+procedure TFormCadastros.db_PacientesDrawColumnCell(Sender: TObject;
+  const Rect: TRect; DataCol: Integer; Column: TColumn; State: TGridDrawState);
+begin
+  if Odd(db_Pacientes.DataSource.DataSet.RecNo) then
+  begin
+    db_Pacientes.Canvas.Brush.Color := clsilver;
+  end
+  else
+  begin
+    db_Pacientes.Canvas.Brush.Color := clwhite;
+  end;
+
+  if (gdSelected in State) then
+  begin
+    db_Pacientes.Canvas.Brush.Color := $00BA2F00;
+    db_Pacientes.Canvas.Font.Color := clwhite;
+  end;
+
+  db_Pacientes.Canvas.FillRect(Rect);
+  db_Pacientes.DefaultDrawColumnCell(Rect, DataCol, Column, State);
+
+  db_Pacientes.Canvas.TextRect(Rect, Rect.Left + 3, Rect.Top + 8,
+    Column.Field.DisplayText);
+end;
+
+procedure TFormCadastros.Btn_EditarClick(Sender: TObject);
+begin
+  FormUpdateFunc.id_FuncRecebido := id_funcionario;
+  FormUpdateFunc.NomeRecebido := Nome;
+  FormUpdateFunc.SobrenomeRecebido := Sobrenome;
+  FormUpdateFunc.CepRecebido := Cep;
+  FormUpdateFunc.CpfRecebido := Cpf;
+  FormUpdateFunc.RgRecebido := Rg;
+  FormUpdateFunc.DataNascRecebido := DataNasc;
+  FormUpdateFunc.SexoRecebido := Sexo;
+  FormUpdateFunc.RgRecebido := Rg;
+  FormUpdateFunc.NResideciaRecebido := NResidencia;
+  FormUpdateFunc.TelefoneRecebido := Telefone;
+  FormUpdateFunc.CelularRecebido := Celular;
+  FormUpdateFunc.ComplementoRecebido := Complemento;
+  FormUpdateFunc.LoginRecebido := Login;
+  FormUpdateFunc.SenhaRecebido := Senha;
+  FormUpdateFunc.CargoRecebido := Cargo;
+
+  if id_funcionario <> 0 then
+  begin
+
+    FormUpdateFunc.ShowModal;
+  end
+  else
+  begin
+    ShowMessage('Selecione um usuario');
+  end;
+end;
+
+procedure TFormCadastros.Btn_NovoFuncionarioClick(Sender: TObject);
+begin
+  FormCadFuncinarios.ShowModal;
+  FormCadFuncinarios.TipoCad := true;
+
+end;
+
+procedure TFormCadastros.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+  FreeAndNil(FormCadastros);
+end;
+
+procedure TFormCadastros.FormShow(Sender: TObject);
+begin
+  DmFuncionarios.FDQuery1.Open;
+  TDbGridPadrao(DBGrid1).ScrollBars := ssVertical;
+  TDbGridPadrao(DBGrid1).DefaultRowHeight := 30;
+  TDbGridPadrao(DBGrid1).ClientHeight :=
+    (30 * TDbGridPadrao(db_Pacientes).RowCount) + 30;
+  TDbGridPadrao(db_Pacientes).ScrollBars := ssVertical;
+  TDbGridPadrao(db_Pacientes).DefaultRowHeight := 30;
+  TDbGridPadrao(db_Pacientes).ClientHeight :=
+    (30 * TDbGridPadrao(db_Pacientes).RowCount) + 30;
+end;
+
+procedure TFormCadastros.Image1Click(Sender: TObject);
+begin
+  Application.Terminate;
+end;
+
+procedure TFormCadastros.Panel5Click(Sender: TObject);
+begin
+  DmFuncionarios.FDQuery1.SQL.Clear;
+  DmFuncionarios.FDQuery1.SQL.add
+    ('select * from pacientes left join pessoa fisica on pf_id = id_pf where nome like :pesq');
+  DmFuncionarios.FDQuery1.ParamByName('pesq').AsString;
+end;
+
+end.

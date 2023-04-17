@@ -1,0 +1,19 @@
+unit U_UsuarioModel;
+
+interface
+type
+  TFuncionario = class
+  private
+    { private declarations }
+  protected
+    { protected declarations }
+  public
+    property Username: string read FUsername write FUsername;
+    property Senha: string read FSenha write FSenha;
+  published
+    { published declarations }
+  end;
+
+implementation
+
+end.

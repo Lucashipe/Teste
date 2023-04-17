@@ -1,0 +1,36 @@
+unit U_UsuarioModel;
+
+interface
+
+type
+  TUsuario = class
+  private
+    FSenha: string;
+    FUsername: string;
+    procedure SetUsername(const Value: string);
+    { private declarations }
+  protected
+    { protected declarations }
+  public
+    property Username: string read FUsername write SetUsername;
+    property Senha: string read FSenha write FSenha;
+  published
+    { published declarations }
+  end;
+
+implementation
+
+uses
+  System.SysUtils;
+
+{ TFuncionario }
+
+procedure TUsuario.SetUsername(const Value: string);
+begin
+  if Value = EmptyStr then
+    raise Exception.Create('Nome precisa ser preenchido correatamente!');
+
+  FUsername := Value;
+end;
+
+end.

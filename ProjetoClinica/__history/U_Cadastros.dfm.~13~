@@ -1,0 +1,97 @@
+object FormCadastros: TFormCadastros
+  Left = 0
+  Top = 0
+  BorderStyle = bsNone
+  Caption = 'FormCadastros'
+  ClientHeight = 768
+  ClientWidth = 1366
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'Tahoma'
+  Font.Style = []
+  OldCreateOrder = False
+  Position = poDesktopCenter
+  PixelsPerInch = 96
+  TextHeight = 13
+  object Pg_Cadastros: TPageControl
+    Left = 0
+    Top = 0
+    Width = 1366
+    Height = 768
+    ActivePage = Pg_CadFunc
+    TabOrder = 0
+    object Pg_CadFunc: TTabSheet
+      Caption = 'Cadastro de Funcion'#225'rios'
+      object PageControl1: TPageControl
+        Left = 0
+        Top = 0
+        Width = 1358
+        Height = 740
+        ActivePage = TabSheet5
+        Align = alClient
+        Font.Charset = ANSI_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'Impact'
+        Font.Style = [fsUnderline]
+        MultiLine = True
+        ParentFont = False
+        ParentShowHint = False
+        ShowHint = False
+        Style = tsFlatButtons
+        TabOrder = 0
+        object Tb_Username: TTabSheet
+          Caption = 'Inf. Login'
+          ImageIndex = 1
+          object Pn_BodyLogin: TPanel
+            Left = 0
+            Top = 0
+            Width = 1350
+            Height = 707
+            Align = alClient
+            Color = clHighlight
+            ParentBackground = False
+            TabOrder = 0
+            ExplicitLeft = 296
+            ExplicitTop = 384
+            ExplicitWidth = 185
+            ExplicitHeight = 41
+          end
+        end
+        object TabSheet5: TTabSheet
+          Caption = 'Inf. Pessoais'
+          object Panel1: TPanel
+            Left = 0
+            Top = 0
+            Width = 1350
+            Height = 707
+            Align = alClient
+            Color = clSilver
+            ParentBackground = False
+            TabOrder = 0
+          end
+        end
+      end
+    end
+    object TabSheet2: TTabSheet
+      Caption = 'Cadastro de '
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -11
+      Font.Name = 'Calibri'
+      Font.Style = []
+      ImageIndex = 1
+      ParentFont = False
+    end
+    object TabSheet3: TTabSheet
+      Caption = 'TabSheet3'
+      ImageIndex = 2
+    end
+    object TabSheet4: TTabSheet
+      Caption = 'TabSheet4'
+      ImageIndex = 3
+    end
+  end
+end

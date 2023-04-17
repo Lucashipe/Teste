@@ -1,0 +1,12 @@
+object DmFuncionarios: TDmFuncionarios
+  OldCreateOrder = False
+  Height = 150
+  Width = 215
+  object FDQuery1: TFDQuery
+    Connection = DataModule1.FDConnection1
+    SQL.Strings = (
+      'select * from funcionarios')
+    Left = 88
+    Top = 56
+  end
+end

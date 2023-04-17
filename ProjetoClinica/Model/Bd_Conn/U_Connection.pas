@@ -1,0 +1,32 @@
+unit U_Connection;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
+  System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, FireDAC.Stan.Intf, FireDAC.Stan.Option,
+  FireDAC.Stan.Error, FireDAC.UI.Intf, FireDAC.Phys.Intf, FireDAC.Stan.Def,
+  FireDAC.Stan.Pool, FireDAC.Stan.Async, FireDAC.Phys, FireDAC.VCLUI.Wait,
+  FireDAC.Phys.PGDef, FireDAC.Phys.PG, Data.DB, FireDAC.Comp.Client, U_Conexao;
+
+type
+  TFormConnection = class(TForm)
+    FDConnection1: TFDConnection;
+    FDPhysPgDriverLink1: TFDPhysPgDriverLink;
+  private
+    { Private declarations }
+
+  public
+    Conexao: TConexao;
+    { Public declarations }
+  end;
+
+var
+  FormConnection: TFormConnection;
+
+implementation
+
+{$R *.dfm}
+
+end.

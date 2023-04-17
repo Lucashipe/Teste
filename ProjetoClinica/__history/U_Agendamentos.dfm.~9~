@@ -1,0 +1,29 @@
+object FormAgendamentos: TFormAgendamentos
+  Left = 0
+  Top = 0
+  BorderIcons = [biSystemMenu]
+  BorderStyle = bsNone
+  Caption = 'FormAgendamentos'
+  ClientHeight = 807
+  ClientWidth = 1382
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'Tahoma'
+  Font.Style = []
+  OldCreateOrder = False
+  Position = poDesktopCenter
+  PixelsPerInch = 96
+  TextHeight = 13
+  object BitBtn1: TBitBtn
+    Left = 1304
+    Top = 0
+    Width = 54
+    Height = 25
+    Kind = bkAbort
+    NumGlyphs = 2
+    TabOrder = 0
+    OnClick = BitBtn1Click
+  end
+end

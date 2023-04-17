@@ -1,0 +1,158 @@
+unit U_Login;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
+  System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, FireDAC.Stan.Intf, FireDAC.Stan.Option,
+  FireDAC.Stan.Error, FireDAC.UI.Intf, FireDAC.Phys.Intf, FireDAC.Stan.Def,
+  FireDAC.Stan.Pool, FireDAC.Stan.Async, FireDAC.Phys, FireDAC.Phys.PG,
+  FireDAC.Phys.PGDef, FireDAC.VCLUI.Wait, Data.DB, FireDAC.Comp.Client,
+  Vcl.ExtCtrls, Vcl.StdCtrls, Vcl.Imaging.jpeg, Vcl.Imaging.pngimage, U_Index,
+  uDm_Conn,
+  Vcl.Buttons, uDm_Login, U_IndexMedico;
+
+type
+  TFormLogin = class(TForm)
+    Panel1: TPanel;
+    Panel2: TPanel;
+    Panel3: TPanel;
+    Edt_Username: TEdit;
+    Edt_Password: TEdit;
+    Label1: TLabel;
+    Label3: TLabel;
+    BtnLogin: TPanel;
+    Image1: TImage;
+    Pnl_Senha: TPanel;
+    Pnl_Username: TPanel;
+    Label2: TLabel;
+    Image2: TImage;
+    Lb_Error: TLabel;
+    procedure FormCreate(Sender: TObject);
+    procedure BtnLoginMouseEnter(Sender: TObject);
+    procedure BtnLoginMouseLeave(Sender: TObject);
+    procedure BtnLoginClick(Sender: TObject);
+    procedure Image2Click(Sender: TObject);
+    procedure FormActivate(Sender: TObject);
+    procedure FormKeyPress(Sender: TObject; var Key: Char);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  FormLogin: TFormLogin;
+  login: string;
+  senha: string;
+
+implementation
+
+{$R *.dfm}
+
+procedure DrawControl(Control: TWinControl);
+var
+  R: TRect;
+  Rgn: HRGN;
+begin
+  with Control do
+  begin
+    R := ClientRect;
+    Rgn := CreateRoundRectRgn(R.Left, R.Top, R.Right, R.Bottom, 20, 20);
+    Perform(EM_GETRECT, 0, lParam(@R));
+    InflateRect(R, -4, -4);
+    Perform(EM_SETRECTNP, 0, lParam(@R));
+    SetWindowRgn(Handle, Rgn, True);
+    Invalidate;
+  end;
+end;
+
+procedure TFormLogin.FormActivate(Sender: TObject);
+begin
+  DataModule1.FDPhysPgDriverLink1.VendorHome := '.\';
+  DataModule1.FDConnection1.Connected := True;
+
+end;
+
+procedure TFormLogin.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+  Application.Terminate;
+end;
+
+procedure TFormLogin.FormCreate(Sender: TObject);
+begin
+  SystemParametersInfo(SPI_SETBEEP, 0, nil, SPIF_SENDWININICHANGE);
+  Panel3.BorderStyle := bsNone;
+  DrawControl(Panel3);
+end;
+
+procedure TFormLogin.FormKeyPress(Sender: TObject; var Key: Char);
+begin
+  if Key = #13 then
+    BtnLoginClick(self);
+end;
+
+procedure TFormLogin.Image2Click(Sender: TObject);
+begin
+  FormLogin.Close;
+end;
+
+procedure TFormLogin.BtnLoginClick(Sender: TObject);
+begin
+  login := Edt_Username.text;
+  senha := Edt_Password.text;
+  if (login <> '') and (senha <> '') then
+  begin
+    DmLogin.Fdquery1.SQL.Clear;
+    DmLogin.Fdquery1.Params.Clear;
+    DmLogin.Fdquery1.SQL.Add
+      ('SELECT * FROM funcionarios WHERE login = :login AND senha = :senha');
+    DmLogin.Fdquery1.ParamByName('login').AsString := login;
+    DmLogin.Fdquery1.ParamByName('senha').AsString := senha;
+    DmLogin.Fdquery1.Open;
+    if not DmLogin.Fdquery1.IsEmpty then
+    begin
+      if DmLogin.Fdquery1.FieldByName('cargo').AsInteger = 0 then
+      begin
+        FormMedico.Show;
+        FormLogin.Width := -1;
+        FormLogin.Height := -1;
+      end
+      else if DmLogin.Fdquery1.FieldByName('cargo').AsInteger = 2 then
+      begin
+        FormIndex.Show;
+        FormLogin.Width := -1;
+        FormLogin.Height := -1;
+      end;
+
+    end
+    else
+    begin
+      Lb_Error.Left := 100;
+      Lb_Error.Caption := 'Usuário ou senha incorretos!';
+
+    end;
+
+  end
+  else
+  begin
+    Pnl_Username.Color := clred;
+    Pnl_Senha.Color := clred;
+    Lb_Error.Caption := 'Digite o usuário e senha corretamentes!';
+  end;
+
+end;
+
+procedure TFormLogin.BtnLoginMouseEnter(Sender: TObject);
+begin
+  BtnLogin.Color := clNavy;
+end;
+
+procedure TFormLogin.BtnLoginMouseLeave(Sender: TObject);
+begin
+  BtnLogin.Color := $00777724;
+end;
+
+end.
