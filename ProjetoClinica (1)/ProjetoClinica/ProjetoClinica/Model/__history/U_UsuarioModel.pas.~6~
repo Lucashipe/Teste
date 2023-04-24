@@ -1,0 +1,29 @@
+unit U_UsuarioModel;
+
+interface
+type
+  TFuncionario = class
+  private
+    FSenha: string;
+    FUsername: string;
+    procedure SetUsername(const Value: string);
+    { private declarations }
+  protected
+    { protected declarations }
+  public
+    property Username: string read FUsername write SetUsername;
+    property Senha: string read FSenha write FSenha;
+  published
+    { published declarations }
+  end;
+
+implementation
+
+{ TFuncionario }
+
+procedure TFuncionario.SetUsername(const Value: string);
+begin
+  FUsername := Value;
+end;
+
+end.

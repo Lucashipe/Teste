@@ -1,0 +1,39 @@
+unit U_Cadastros;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ComCtrls;
+
+type
+  TFormCadastros = class(TForm)
+    Pg_Cadastros: TPageControl;
+    TabSheet1: TTabSheet;
+    TabSheet2: TTabSheet;
+    TabSheet3: TTabSheet;
+    TabSheet4: TTabSheet;
+    PageControl1: TPageControl;
+    TabSheet5: TTabSheet;
+    TabSheet6: TTabSheet;
+    TabSheet7: TTabSheet;
+    procedure FormActivate(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  FormCadastros: TFormCadastros;
+
+implementation
+
+{$R *.dfm}
+
+procedure TFormCadastros.FormActivate(Sender: TObject);
+begin
+Pg_Cadastros.IsLightStyleColor(clRed);
+end;
+
+end.

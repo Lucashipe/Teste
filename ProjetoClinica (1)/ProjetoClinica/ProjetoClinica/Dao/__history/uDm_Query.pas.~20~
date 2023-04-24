@@ -1,0 +1,60 @@
+unit uDm_Query;
+
+interface
+
+uses
+  System.SysUtils, System.Classes, uDm_Conn, FireDAC.Stan.Intf,
+  FireDAC.Stan.Option, FireDAC.Stan.Param, FireDAC.Stan.Error, FireDAC.DatS,
+  FireDAC.Phys.Intf, FireDAC.DApt.Intf, FireDAC.Stan.Async, FireDAC.DApt,
+  Data.DB, FireDAC.Comp.DataSet, FireDAC.Comp.Client;
+
+type
+  TComp = TComponent;
+  TDmQuery = class(TDataModule)
+    Query: TFDQuery;
+    Consulta: TFDQuery;
+    Paciente_Ds: TFDQuery;
+    especialidades: TFDQuery;
+    FDQuery1: TFDQuery;
+    procedure DataModuleCreate(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  DmQuery: TDmQuery;
+
+implementation
+
+{%CLASSGROUP 'Vcl.Controls.TControl'}
+{$R *.dfm}
+
+procedure TMeuDataModule.GetComponentsList(AList: TList);
+begin
+  AList.Clear;
+  Self.GetCompsList(AList);
+end;
+
+procedure TMeuDataModule.DataModuleCreate(Sender: TObject);
+var
+  compList: TList;
+  i: Integer;
+begin
+  // Obtem a lista de componentes do datamodule
+  compList := TList.Create;
+  try
+    GetComponentsList(compList);
+    // Ativa todos os objetos TFDQuery presentes no datamodule
+    for i := 0 to compList.Count - 1 do
+    begin
+      if (compList[i] is TFDQuery) then
+        TFDQuery(compList[i]).Active := True;
+    end;
+  finally
+    compList.Free;
+  end;
+end;
+
+end.

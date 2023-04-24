@@ -1,0 +1,10 @@
+object DmLogin: TDmLogin
+  OldCreateOrder = False
+  Height = 150
+  Width = 215
+  object FDQuery1: TFDQuery
+    Connection = DataModule1.FDConnection1
+    Left = 88
+    Top = 56
+  end
+end

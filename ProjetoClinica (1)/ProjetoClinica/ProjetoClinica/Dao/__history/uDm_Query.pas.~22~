@@ -1,0 +1,77 @@
+unit uDm_Query;
+
+interface
+
+uses
+  System.SysUtils, System.Classes, uDm_Conn, FireDAC.Stan.Intf,
+  FireDAC.Stan.Option, FireDAC.Stan.Param, FireDAC.Stan.Error, FireDAC.DatS,
+  FireDAC.Phys.Intf, FireDAC.DApt.Intf, FireDAC.Stan.Async, FireDAC.DApt,
+  Data.DB, FireDAC.Comp.DataSet, FireDAC.Comp.Client;
+
+type
+  TMeuDataModule = class(TDataModule)
+    // Declaração de componentes, eventos, etc.
+  private
+    procedure GetChildrenComponents(AComponent: TComponent; AList: TList);
+  public
+    // Declaração de métodos públicos
+  end;
+
+  TDmQuery = class(TDataModule)
+    Query: TFDQuery;
+    Consulta: TFDQuery;
+    Paciente_Ds: TFDQuery;
+    especialidades: TFDQuery;
+    FDQuery1: TFDQuery;
+    procedure DataModuleCreate(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  DmQuery: TDmQuery;
+
+implementation
+
+{%CLASSGROUP 'Vcl.Controls.TControl'}
+{$R *.dfm}
+
+procedure TMeuDataModule.GetChildrenComponents(AComponent: TComponent;
+  AList: TList);
+var
+  i: Integer;
+begin
+  for i := 0 to AComponent.ComponentCount - 1 do
+  begin
+    if (AComponent.Components[i] is TFDQuery) then
+      AList.Add(AComponent.Components[i]);
+
+    // Verifica se o componente atual tem componentes filhos e adiciona-os recursivamente à lista
+    if (AComponent.Components[i].ComponentCount > 0) then
+      GetChildrenComponents(AComponent.Components[i], AList);
+  end;
+end;
+
+procedure TMeuDataModule.DataModuleCreate(Sender: TObject);
+var
+  compList: TList;
+  i: Integer;
+begin
+  // Obtem a lista de componentes do datamodule
+  compList := TList.Create;
+  try
+    GetChildrenComponents(Self, compList);
+    // Ativa todos os objetos TFDQuery presentes no datamodule
+    for i := 0 to compList.Count - 1 do
+    begin
+      if (compList[i] is TFDQuery) then
+        TFDQuery(compList[i]).Active := True;
+    end;
+  finally
+    compList.Free;
+  end;
+end;
+
+end.

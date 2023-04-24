@@ -1,0 +1,39 @@
+unit U_Agendamentos;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, VCLTee.TeCanvas,
+  Vcl.Buttons, Vcl.ExtCtrls, Vcl.Imaging.pngimage;
+
+type
+  TFormAgendamentos = class(TForm)
+    Panel1: TPanel;
+    Image1: TImage;
+    procedure BitBtn1Click(Sender: TObject);
+    procedure Image1Click(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  FormAgendamentos: TFormAgendamentos;
+
+implementation
+
+{$R *.dfm}
+
+procedure TFormAgendamentos.BitBtn1Click(Sender: TObject);
+begin
+  FormAgendamentos.Close;
+end;
+
+procedure TFormAgendamentos.Image1Click(Sender: TObject);
+begin
+  FormAgendamentos.close;
+end;
+
+end.

@@ -1,0 +1,21 @@
+unit U_LoginBack;
+
+interface
+
+type
+
+TLogin = class(TComponent)
+private
+  { private declarations }
+protected
+  { protected declarations }
+public
+  { public declarations }
+  
+published
+  { published declarations }
+end;
+
+implementation
+
+end.

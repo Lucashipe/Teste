@@ -1,0 +1,234 @@
+unit U_Agendamentos;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
+  System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, VCLTee.TeCanvas,
+  Vcl.Buttons, Vcl.ExtCtrls, Vcl.Imaging.pngimage, Vcl.ComCtrls, Data.DB,
+  Vcl.Grids, Vcl.DBGrids, uDm_Query, Vcl.Mask, Vcl.DBCtrls;
+
+type
+  TDbGridPadrao = class(TCustomGrid);
+
+  TFormAgendamentos = class(TForm)
+    Header: TPanel;
+    Image1: TImage;
+    Body: TPanel;
+    ListView1: TListView;
+    pnl_Shadow: TPanel;
+    db_Consulta: TDBGrid;
+    ds_Consulta: TDataSource;
+    pnl_MarcarConsulta: TPanel;
+    cb_Especialidades: TComboBox;
+    cb_TempoEstimado: TComboBox;
+    Label1: TLabel;
+    Label2: TLabel;
+    Label3: TLabel;
+    Label4: TLabel;
+    edt_PacienteCpf: TMaskEdit;
+    Label5: TLabel;
+    btn_Agendar: TPanel;
+    pnl_ConfirmarAg: TPanel;
+    Label6: TLabel;
+    lb_PacienteName: TLabel;
+    lb_Especialidade: TLabel;
+    lb_Medico: TLabel;
+    lb_TempoEstimado: TLabel;
+    lb_DataConsulta: TLabel;
+    edt_Horario: TLabeledEdit;
+    lb_HorarioConsulta: TLabel;
+    btn_ConfirmaAg: TPanel;
+    ds_Medico: TDataSource;
+    cb_Medicos: TDBLookupComboBox;
+    procedure BitBtn1Click(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure Image1Click(Sender: TObject);
+    procedure ListView1SelectItem(Sender: TObject; Item: TListItem;
+      Selected: Boolean);
+    procedure FormShow(Sender: TObject);
+    procedure cb_EspecialidadesChange(Sender: TObject);
+    procedure btn_AgendarClick(Sender: TObject);
+    procedure btn_ConfirmaAgClick(Sender: TObject);
+    procedure cb_MedicosCloseUp(Sender: TObject);
+    { Private declarations }
+  public
+    { Public declarations }
+    DataSelecionada: Tdate;
+  end;
+
+var
+  FormAgendamentos: TFormAgendamentos;
+  IdMedico: integer;
+  IdPaciente: integer;
+
+implementation
+
+{$R *.dfm}
+
+procedure TFormAgendamentos.BitBtn1Click(Sender: TObject);
+begin
+  FormAgendamentos.Close;
+end;
+
+procedure TFormAgendamentos.btn_AgendarClick(Sender: TObject);
+begin
+  if edt_Horario.Text <> '' then
+  begin
+
+    if (cb_Especialidades.Text <> '') and (cb_Medicos.Text <> '') and
+      (cb_TempoEstimado.Text <> '') then
+    begin
+
+      DmQuery.SelectPacientes.SQL.Clear;
+      DmQuery.SelectPacientes.SQL.add
+        ('Select * from pacientes left join pessoa_fisica on pf_id = id_pf WHERE cpf = :cpf');
+      DmQuery.SelectPacientes.Parambyname('cpf').asstring :=
+        edt_PacienteCpf.Text;
+      DmQuery.SelectPacientes.open;
+      if not DmQuery.SelectPacientes.IsEmpty then
+      begin
+        pnl_ConfirmarAg.Visible := true;
+        lb_PacienteName.Caption := 'Nome Paciente: ' +
+          DmQuery.SelectPacientes.fieldbyname('nome').asstring + ' ' +
+          DmQuery.SelectPacientes.fieldbyname('sobrenome').asstring;
+        lb_Especialidade.Caption := 'Especialidade: ' + cb_Especialidades.Text;
+        lb_Medico.Caption := cb_Medicos.Text;
+        lb_TempoEstimado.Caption := 'Tempo Estimado: ' + cb_TempoEstimado.Text;
+        lb_DataConsulta.Caption := 'Data Consultas: ' +
+          datetostr(DataSelecionada);
+        lb_HorarioConsulta.Caption := 'Horario Consulta: ' + edt_Horario.Text;
+        IdPaciente := DmQuery.SelectPacientes.fieldbyname('id_pct')
+          .AsInteger;
+      end
+      else
+      begin
+        ShowMessage('Paciente não encontrado');
+      end;
+    end
+    else
+    begin
+      ShowMessage('Prencha corretamente todas as informações!');
+    end;
+  end
+  else
+  begin
+    ShowMessage('Selecione um horario na tabela');
+    ListView1.SetFocus;
+  end;
+end;
+
+procedure TFormAgendamentos.cb_MedicosCloseUp(Sender: TObject);
+begin
+  if not VarIsNull(cb_Medicos.KeyValue) then
+  begin
+    IdMedico := cb_Medicos.KeyValue;
+  end;
+end;
+
+procedure TFormAgendamentos.btn_ConfirmaAgClick(Sender: TObject);
+begin
+  DmQuery.Query.SQL.Clear;
+  DmQuery.Query.SQL.add
+    ('Insert Into consultas (medico_id, paciente_id, data_consulta, horario_consulta, tempo_estimado)');
+  DmQuery.Query.SQL.add
+    ('VALUES (:medico_id, :paciente_id, :data_consulta, :horario_consulta, :tempo_estimado)');
+  DmQuery.Query.Parambyname('medico_id').AsInteger := IdMedico;
+  DmQuery.Query.Parambyname('paciente_id').AsInteger := IdPaciente;
+  DmQuery.Query.Parambyname('data_consulta').AsDate := DataSelecionada;
+  DmQuery.Query.Parambyname('horario_consulta').AsTime :=
+    strtotime(edt_Horario.Text);
+  DmQuery.Query.Parambyname('tempo_estimado').AsTime := strtotime(cb_TempoEstimado.Text);
+
+end;
+
+procedure TFormAgendamentos.cb_EspecialidadesChange(Sender: TObject);
+begin
+  // Limpa o valor selecionado no TDBLookupComboBox
+  cb_Medicos.KeyValue := null;
+
+  // Cria a consulta SQL
+  DmQuery.Query.SQL.Clear;
+  DmQuery.Query.SQL.add
+    ('SELECT *, CAST(CONCAT(nome, '' '', sobrenome) AS VARCHAR(100)) AS nome_completo_string FROM medicos');
+  DmQuery.Query.SQL.add('LEFT JOIN funcionarios ON func_id = id_funcionario');
+  DmQuery.Query.SQL.add
+    ('LEFT JOIN pessoa_fisica ON pf_id = id_pf WHERE especialidade = :especialidade');
+  DmQuery.Query.Parambyname('especialidade').asstring := cb_Especialidades.Text;
+  DmQuery.Query.open;
+
+  // Configura o TDBLookupComboBox
+  cb_Medicos.ListSource := ds_Medico;
+  cb_Medicos.ListField := 'nome_completo_string';
+  cb_Medicos.KeyField := 'id_medico';
+end;
+
+procedure TFormAgendamentos.FormClose(Sender: TObject;
+  var Action: TCloseAction);
+begin
+  FreeAndNil(FormAgendamentos);
+end;
+
+procedure TFormAgendamentos.FormShow(Sender: TObject);
+var
+  Hour, Minute: integer;
+  ListItem: TListItem;
+begin
+  while not DmQuery.especialidades.Eof do
+  begin
+    cb_Especialidades.AddItem(DmQuery.especialidades.fieldbyname
+      ('especialidade').asstring, nil);
+    DmQuery.especialidades.Next;
+  end;
+  TDbGridPadrao(db_Consulta).ClientHeight :=
+    (30 * TDbGridPadrao(db_Consulta).RowCount) + 30;
+  TDbGridPadrao(db_Consulta).ScrollBars := ssVertical;
+  for Hour := 7 to 21 do
+  begin
+    Minute := 0;
+    repeat
+      ListItem := ListView1.Items.add;
+      ListItem.Caption := Format('%2.2d:%2.2d%s',
+        [Hour, Minute, '', sLineBreak]);
+      Minute := Minute + 15;
+    until Minute > 45;
+  end;
+  DmQuery.Consulta.SQL.Clear;
+  DmQuery.Consulta.SQL.add
+    ('Select * From consultas left join pacientes on paciente_id = id_pct left join pessoa_fisica on pacientes.pf_id = id_pf');
+  DmQuery.Consulta.SQL.add
+    ('left join medicos on consultas.medico_id = medicos.id_medico left join funcionarios on id_funcionario = medicos.func_id left join pessoa_fisica pessoa_fisica2 on funcionarios.pf_id = pessoa_fisica2.id_pf where data_consulta = :date');
+  DmQuery.Consulta.Parambyname('date').AsDate := DataSelecionada;
+  DmQuery.Consulta.open;
+
+end;
+
+procedure TFormAgendamentos.Image1Click(Sender: TObject);
+begin
+  Application.Terminate;
+end;
+
+procedure TFormAgendamentos.ListView1SelectItem(Sender: TObject;
+  Item: TListItem; Selected: Boolean);
+var
+  HorarioSelecionado: string;
+begin
+  if Selected then
+  begin
+    HorarioSelecionado := Item.Caption;
+  end;
+  edt_Horario.Text := HorarioSelecionado;
+  DmQuery.Consulta.SQL.Clear;
+  DmQuery.Consulta.SQL.add
+    ('Select * From consultas left join pacientes on paciente_id = id_pct left join pessoa_fisica on pacientes.pf_id = id_pf');
+  DmQuery.Consulta.SQL.add
+    ('left join medicos on consultas.medico_id = medicos.id_medico left join funcionarios on id_funcionario = medicos.func_id left join pessoa_fisica pessoa_fisica2 on funcionarios.pf_id = pessoa_fisica2.id_pf');
+  DmQuery.Consulta.SQL.add
+    ('WHERE to_char(horario_consulta, ''HH24:MI'') = :horario and data_consulta = :date');
+  DmQuery.Consulta.Parambyname('horario').Value := HorarioSelecionado;
+  DmQuery.Consulta.Parambyname('date').AsDate := DataSelecionada;
+  DmQuery.Consulta.open;
+end;
+
+end.

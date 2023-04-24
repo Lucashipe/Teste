@@ -1,0 +1,31 @@
+object FormConnection: TFormConnection
+  Left = 0
+  Top = 0
+  Caption = 'FormConnection'
+  ClientHeight = 65
+  ClientWidth = 219
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'Tahoma'
+  Font.Style = []
+  OldCreateOrder = False
+  PixelsPerInch = 96
+  TextHeight = 13
+  object FDConnection1: TFDConnection
+    Params.Strings = (
+      'Database=ParkingBd'
+      'User_Name=Postgres'
+      'Password=3391'
+      'Server=localhost'
+      'DriverID=PG')
+    LoginPrompt = False
+    Left = 32
+    Top = 16
+  end
+  object FDPhysPgDriverLink1: TFDPhysPgDriverLink
+    Left = 152
+    Top = 16
+  end
+end

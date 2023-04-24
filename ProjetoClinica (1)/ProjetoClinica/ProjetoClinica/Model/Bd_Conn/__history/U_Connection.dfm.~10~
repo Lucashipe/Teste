@@ -1,0 +1,37 @@
+object FormConnection: TFormConnection
+  Left = 0
+  Top = 0
+  Caption = 'FormConnection'
+  ClientHeight = 65
+  ClientWidth = 219
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'Tahoma'
+  Font.Style = []
+  OldCreateOrder = False
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  PixelsPerInch = 96
+  TextHeight = 13
+  object FDConnection1: TFDConnection
+    Params.Strings = (
+      'Database=apr_lucas_siqueira'
+      'User_Name=aprendiz'
+      'Password=12345'
+      'Server=bdteste.rpinfo.com.br'
+      'DriverID=PG')
+    LoginPrompt = False
+    Left = 32
+    Top = 16
+  end
+  object FDPhysPgDriverLink1: TFDPhysPgDriverLink
+    DriverID = 'PG'
+    VendorHome = 
+      'F:\docs\Embarcadero\Studio\Projects\ProjetoClinica\Login my proj' +
+      'ect\Win32\Debug'
+    Left = 152
+    Top = 16
+  end
+end

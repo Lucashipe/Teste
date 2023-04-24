@@ -1,0 +1,30 @@
+unit U_NovoProntúario;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls, Vcl.StdCtrls;
+
+type
+  TFormNovoProntuario = class(TForm)
+    pnl_Container2: TPanel;
+    memo_Diagnostico: TMemo;
+    memo_Queixa: TMemo;
+    edt_Peso: TLabeledEdit;
+    LabeledEdit1: TLabeledEdit;
+    lb_Queixa: TLabel;
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  FormNovoProntuario: TFormNovoProntuario;
+
+implementation
+
+{$R *.dfm}
+
+end.

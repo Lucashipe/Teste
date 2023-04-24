@@ -1,0 +1,28 @@
+object DmFuncionarios: TDmFuncionarios
+  OldCreateOrder = False
+  OnCreate = DataModuleCreate
+  Height = 150
+  Width = 215
+  object FDQuery1: TFDQuery
+    Connection = DataModule1.FDConnection1
+    SQL.Strings = (
+      
+        'select * from funcionarios left join pessoa_fisica on pf_id = id' +
+        '_pf')
+    Left = 24
+    Top = 24
+  end
+  object Update: TFDQuery
+    Connection = DataModule1.FDConnection1
+    Left = 88
+    Top = 32
+  end
+  object cb_Especialidades: TFDQuery
+    Active = True
+    Connection = DataModule1.FDConnection1
+    SQL.Strings = (
+      'Select * from especialidades')
+    Left = 160
+    Top = 40
+  end
+end
